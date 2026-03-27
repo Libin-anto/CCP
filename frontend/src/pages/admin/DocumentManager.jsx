@@ -98,7 +98,7 @@ const DocumentManager = () => {
         setLoading(true);
         try {
             const skip = (page - 1) * limit;
-            const url = `http://localhost:8000/api/v1/documents/?skip=${skip}&limit=${limit}${query ? `&q=${query}` : ''}`;
+            const url = `http://127.0.0.1:8000/api/v1/documents/?skip=${skip}&limit=${limit}${query ? `&q=${query}` : ''}`;
             const res = await axios.get(url);
 
             setDocuments(res.data.items);
@@ -134,10 +134,10 @@ const DocumentManager = () => {
             };
             if (itemToDelete === 'all') {
                 setDeletingId('all');
-                await axios.delete(`http://localhost:8000/api/v1/documents/all`, config);
+                await axios.delete(`http://127.0.0.1:8000/api/v1/documents/all`, config);
             } else {
                 setDeletingId(itemToDelete.id);
-                await axios.delete(`http://localhost:8000/api/v1/documents/${itemToDelete.id}`, config);
+                await axios.delete(`http://127.0.0.1:8000/api/v1/documents/${itemToDelete.id}`, config);
             }
 
             // Refresh current view
@@ -161,8 +161,8 @@ const DocumentManager = () => {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="sm:flex sm:items-center sm:justify-between mb-6">
-                <h1 className="text-2xl font-bold text-gray-900">Document Manager</h1>
+            <div className="sm:flex sm:items-center sm:justify-between mb-8">
+                <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 tracking-tight">Document Repository</h1>
                 <div className="mt-4 sm:mt-0 flex items-center space-x-4">
                     <span className="text-sm text-gray-500">
                         Total Documents: <span className="font-semibold text-gray-900">{totalDocs}</span>
@@ -185,20 +185,20 @@ const DocumentManager = () => {
             </div>
 
             {/* Search Bar */}
-            <div className="mb-6 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            <div className="mb-8 relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <MagnifyingGlassIcon className="h-6 w-6 text-slate-400 group-focus-within:text-blue-500 transition-colors" aria-hidden="true" />
                 </div>
                 <input
                     type="text"
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Search documents by name..."
+                    className="block w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-xl leading-5 bg-white shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-base transition-shadow"
+                    placeholder="Search documents by filename..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
+            <div className="bg-white shadow-lg shadow-slate-200/40 overflow-hidden sm:rounded-2xl border border-slate-100">
                 {loading ? (
                     <div className="p-12 text-center text-gray-500">Loading...</div>
                 ) : (

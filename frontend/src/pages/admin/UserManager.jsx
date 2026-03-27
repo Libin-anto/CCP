@@ -20,7 +20,7 @@ function CreateUserModal({ onClose, onCreated }) {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.post('http://localhost:8000/api/v1/users/', form);
+            await axios.post('http://127.0.0.1:8000/api/v1/users/', form);
             onCreated();
             onClose();
         } catch (err) {
@@ -84,7 +84,7 @@ export default function UserManager() {
 
     const fetchUsers = () => {
         setLoading(true);
-        axios.get('http://localhost:8000/api/v1/users/')
+        axios.get('http://127.0.0.1:8000/api/v1/users/')
             .then(r => setUsers(r.data))
             .catch(() => { })
             .finally(() => setLoading(false));
@@ -99,7 +99,7 @@ export default function UserManager() {
 
     const saveEdit = async (userId) => {
         try {
-            await axios.put(`http://localhost:8000/api/v1/users/${userId}`, editForm);
+            await axios.put(`http://127.0.0.1:8000/api/v1/users/${userId}`, editForm);
             setEditingId(null);
             fetchUsers();
         } catch { alert('Failed to update user'); }
@@ -108,7 +108,7 @@ export default function UserManager() {
     const deleteUser = async (userId) => {
         if (!window.confirm('Delete this user?')) return;
         try {
-            await axios.delete(`http://localhost:8000/api/v1/users/${userId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/users/${userId}`);
             fetchUsers();
         } catch (e) { alert(e.response?.data?.detail || 'Failed to delete user'); }
     };
@@ -117,24 +117,24 @@ export default function UserManager() {
         <div>
             <div className="sm:flex sm:items-center sm:justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">User Manager</h1>
-                    <p className="text-sm text-gray-500 mt-1">{users.length} total users</p>
+                    <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 tracking-tight">Team Management</h1>
+                    <p className="text-sm text-slate-500 mt-1.5 font-medium">{users.length} registered members</p>
                 </div>
                 <button onClick={() => setShowCreate(true)}
-                    className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition shadow-sm">
-                    <UserPlusIcon className="h-5 w-5 mr-2" /> Add User
+                    className="mt-4 sm:mt-0 inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-blue-500/30 transform hover:-translate-y-0.5">
+                    <UserPlusIcon className="h-5 w-5 mr-2" /> Add Member
                 </button>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
                 {loading ? (
-                    <div className="p-12 text-center text-gray-400">Loading…</div>
+                    <div className="p-16 text-center text-slate-400 font-medium animate-pulse">Loading directory…</div>
                 ) : (
-                    <table className="min-w-full divide-y divide-gray-100">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-slate-100">
+                        <thead className="bg-slate-50/80 backdrop-blur-sm">
                             <tr>
-                                {['Email', 'Role', 'Department', 'Status', 'Actions'].map(h => (
-                                    <th key={h} className="px-5 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
+                                {['Email Account', 'Access Role', 'Department', 'Status', 'Manage'].map(h => (
+                                    <th key={h} className="px-6 py-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">{h}</th>
                                 ))}
                             </tr>
                         </thead>

@@ -31,40 +31,52 @@ function NavLinks({ mobile, onClick }) {
         { name: 'Users', path: '/admin/users', roles: ['admin'] },
     ].filter(l => !user || l.roles.includes(user.role));
 
-    const base = mobile ? "block px-3 py-2 rounded-md text-base font-medium" : "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors";
-    const active = mobile ? "bg-blue-50 text-blue-700" : "border-blue-500 text-gray-900";
-    const inactive = mobile ? "text-gray-600 hover:bg-gray-50 hover:text-gray-900" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700";
+    const base = mobile ? "block px-4 py-3 rounded-xl text-base font-semibold transition-all" : "inline-flex items-center px-3 py-1.5 rounded-xl text-sm font-bold transition-all duration-200";
+    const active = mobile ? "bg-blue-50 text-blue-700" : "bg-blue-50 text-blue-700 shadow-sm border border-blue-100";
+    const inactive = mobile ? "text-slate-600 hover:bg-slate-50 hover:text-slate-900" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900 border border-transparent";
 
     return (
-        <>
+        <div className="flex items-center space-x-2">
             {links.map(link => (
                 <Link key={link.path} to={link.path} onClick={onClick}
                     className={`${base} ${location.pathname === link.path ? active : inactive}`}>
                     {link.name}
                 </Link>
             ))}
-        </>
+        </div>
     );
 }
 
 function AppShell() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logout } = useAuth();
+    const location = useLocation();
     const ROLE_BADGE = { admin: 'bg-red-100 text-red-700', manager: 'bg-amber-100 text-amber-700', employee: 'bg-green-100 text-green-700' };
 
+    if (location.pathname === '/login') {
+        return (
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+        );
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50/50">
-            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-100 selection:text-blue-900">
+            <nav className="bg-white/80 backdrop-blur-xl border-b border-white/40 shadow-[0_4px_30px_rgba(0,0,0,0.03)] sticky top-0 z-50 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0 flex items-center">
-                                <div className="bg-blue-600 p-1.5 rounded-lg mr-2">
-                                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <div className="flex-shrink-0 flex items-center gap-3 pr-4 group cursor-pointer transition-transform hover:scale-105 duration-300">
+                                <div className="bg-gradient-to-tr from-blue-700 to-indigo-500 p-2 rounded-xl shadow-md border border-blue-500/20">
+                                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <span className="font-bold text-xl tracking-tight text-gray-900">KMRL <span className="text-blue-600">AI</span></span>
+                                <span className="font-extrabold text-xl tracking-tight text-slate-900">
+                                    KMRL <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">AI</span>
+                                </span>
                             </div>
                             <div className="hidden sm:ml-8 sm:flex sm:space-x-6 sm:items-center">
                                 <NavLinks />

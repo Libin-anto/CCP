@@ -16,13 +16,14 @@ function AdminDashboard({ stats }) {
         <div className="space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {statCards.map(({ label, value, icon: Icon, color }) => (
-                    <div key={label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center space-x-4">
-                        <div className={`bg-${color}-100 p-3 rounded-xl`}>
+                    <div key={label} className="bg-white/90 backdrop-blur-md rounded-2xl border border-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 flex items-center space-x-4 relative overflow-hidden group">
+                        <div className={`absolute -right-4 -top-4 w-24 h-24 bg-${color}-50 rounded-full opacity-50 group-hover:scale-150 transition-transform duration-500`} />
+                        <div className={`relative bg-gradient-to-br from-${color}-50 to-${color}-100/50 p-3.5 rounded-2xl border border-${color}-100`}>
                             <Icon className={`h-7 w-7 text-${color}-600`} />
                         </div>
-                        <div>
-                            <p className="text-2xl font-bold text-gray-900">{value}</p>
-                            <p className="text-sm text-gray-500">{label}</p>
+                        <div className="relative">
+                            <p className="text-3xl font-extrabold text-slate-800 tracking-tight">{value}</p>
+                            <p className="text-sm font-semibold text-slate-500 mt-0.5">{label}</p>
                         </div>
                     </div>
                 ))}
@@ -44,9 +45,9 @@ function AdminDashboard({ stats }) {
             )}
 
             {/* Quick Links */}
-            <div className="flex flex-wrap gap-3">
-                <Link to="/admin/documents" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition">Manage Documents</Link>
-                <Link to="/admin/users" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition">Manage Users</Link>
+            <div className="flex flex-wrap gap-4">
+                <Link to="/admin/documents" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 text-white rounded-xl text-sm font-bold transition-all duration-300 transform hover:-translate-y-0.5">Manage Documents</Link>
+                <Link to="/admin/users" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 shadow-lg shadow-slate-800/20 hover:shadow-slate-800/40 text-white rounded-xl text-sm font-bold transition-all duration-300 transform hover:-translate-y-0.5">Manage Users</Link>
             </div>
 
             <RecentUploads docs={stats.recent_uploads || []} />
@@ -60,14 +61,14 @@ function ManagerDashboard({ stats }) {
     const [filter, setFilter] = useState('pending');
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/v1/documents/?status=${filter}&limit=20`)
+        axios.get(`http://127.0.0.1:8000/api/v1/documents/?status=${filter}&limit=20`)
             .then(r => setDocs(r.data.items))
             .catch(() => { });
     }, [filter]);
 
     const handleAction = async (docId, action) => {
         try {
-            await axios.put(`http://localhost:8000/api/v1/documents/${docId}/${action}`, {});
+            await axios.put(`http://127.0.0.1:8000/api/v1/documents/${docId}/${action}`, {});
             setDocs(prev => prev.filter(d => d.id !== docId));
         } catch (e) {
             alert(`Failed to ${action} document`);
@@ -203,7 +204,7 @@ export default function Dashboard() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/v1/analytics/dashboard', {
+        fetch('http://127.0.0.1:8000/api/v1/analytics/dashboard', {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         })
             .then(r => r.json())

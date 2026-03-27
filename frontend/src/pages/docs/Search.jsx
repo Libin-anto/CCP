@@ -57,41 +57,41 @@ export default function Search() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-            <div className="text-center mb-10">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">KMRL Document Intelligence</h1>
-                <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">Search millions of documents by meaning, not just filename.</p>
+            <div className="text-center mb-12">
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 mb-4 tracking-tight">Intelligence Search</h1>
+                <p className="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto font-medium">Search millions of documents by semantic meaning, not just filename.</p>
             </div>
 
-            <form onSubmit={search} className="relative mb-10 max-w-2xl mx-auto">
+            <form onSubmit={search} className="relative mb-14 max-w-3xl mx-auto group">
                 <div className="relative flex items-center">
                     <input
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Ask a question..."
-                        className="w-full p-4 pl-12 pr-28 rounded-2xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-base sm:text-lg bg-white"
+                        className="w-full p-5 pl-14 pr-32 rounded-2xl border border-gray-200 shadow-lg shadow-blue-500/5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-lg sm:text-xl bg-white/90 backdrop-blur-sm"
                     />
-                    <MagnifyingGlassIcon className="h-6 w-6 text-gray-400 absolute left-4" />
+                    <MagnifyingGlassIcon className="h-7 w-7 text-gray-400 absolute left-5 group-focus-within:text-blue-500 transition-colors" />
                     <button
                         type="submit"
                         disabled={loading}
-                        className="absolute right-2 bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 font-semibold disabled:opacity-50 transition-colors shadow-sm text-sm sm:text-base"
+                        className="absolute right-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 font-bold disabled:opacity-50 transition-all transform hover:-translate-y-0.5 shadow-md shadow-blue-500/30 text-sm sm:text-base"
                     >
-                        {loading ? '...' : 'Search'}
+                        {loading ? 'Searching...' : 'Search'}
                     </button>
                 </div>
-                <p className="mt-2 text-xs text-gray-400 text-center sm:text-left sm:ml-4 italic">Try: "Safety guidelines for tunnel work"</p>
+                <p className="mt-3 text-sm text-gray-400 text-center font-medium italic">Try: "Safety guidelines for tunnel work"</p>
             </form>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
                 {results.map((doc) => (
-                    <div key={doc.id} className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+                    <div key={doc.id} className="bg-white p-5 sm:p-7 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                         <div className="flex flex-col sm:flex-row items-start">
-                            <div className="bg-blue-50 p-3 rounded-xl mb-4 sm:mb-0 sm:mr-5 group-hover:bg-blue-100 transition-colors flex-shrink-0">
-                                <DocumentTextIcon className="h-8 w-8 text-blue-600" />
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3.5 rounded-xl mb-4 sm:mb-0 sm:mr-6 group-hover:from-blue-100 group-hover:to-indigo-100 transition-colors flex-shrink-0 border border-blue-100/50">
+                                <DocumentTextIcon className="h-8 w-8 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-blue-600 cursor-pointer transition-colors truncate">
+                                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-blue-600 cursor-pointer transition-colors truncate">
                                     {doc.title}
                                 </h3>
                                 <div className="flex flex-wrap gap-2 mt-2 mb-3">

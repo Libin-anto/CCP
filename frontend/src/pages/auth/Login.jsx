@@ -16,8 +16,7 @@ export default function Login() {
         setError('');
         setLoading(true);
         try {
-            const user = await login(email, password);
-            // Redirect based on role
+            await login(email, password);
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.detail || 'Login failed. Check your credentials.');
@@ -27,48 +26,79 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4">
-            <div className="w-full max-w-md">
-                {/* Logo & Title */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-blue-600 shadow-lg mb-4">
-                        <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <div className="flex min-h-screen bg-white">
+            {/* Left Panel - Branding */}
+            <div className="hidden lg:flex lg:w-1/2 bg-blue-600 flex-col justify-between p-12 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-700 to-indigo-900 opacity-90"></div>
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+
+                <div className="relative z-10 flex items-center gap-3">
+                    <div className="bg-white p-2.5 rounded-xl shadow-lg">
+                        <svg className="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                     </div>
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">KMRL <span className="text-blue-600">AI</span></h1>
-                    <p className="mt-1 text-sm text-gray-500">Document Intelligence System</p>
+                    <span className="font-bold text-3xl tracking-tight text-white">KMRL <span className="text-blue-200">AI</span></span>
                 </div>
 
-                {/* Card */}
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-                    <h2 className="text-xl font-bold text-gray-900 mb-6">Sign in to your account</h2>
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
-                                required
-                                placeholder="you@kmrl.co.in"
-                                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
-                            />
+                <div className="relative z-10 text-white max-w-lg mt-auto mb-24">
+                    <h2 className="text-5xl font-extrabold tracking-tight mb-6 leading-tight">Intelligent Document Processing</h2>
+                    <p className="text-blue-100 text-xl leading-relaxed">
+                        Streamline your workflow with AI-powered data extraction, automated categorization, and secure internal approvals.
+                    </p>
+                </div>
+
+                <div className="relative z-10 text-blue-200 text-sm font-medium">
+                    &copy; {new Date().getFullYear()} Kochi Metro Rail Limited. All rights reserved.
+                </div>
+            </div>
+
+            {/* Right Panel - Login Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-gray-50/50">
+                <div className="w-full max-w-md space-y-8">
+                    {/* Mobile Logo (hidden on desktop since left panel has it) */}
+                    <div className="lg:hidden flex justify-center items-center gap-3 mb-12">
+                        <div className="bg-blue-600 p-2.5 rounded-xl shadow-md">
+                            <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={e => setPassword(e.target.value)}
-                                required
-                                placeholder="••••••••"
-                                className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
-                            />
+                        <span className="font-bold text-3xl tracking-tight text-gray-900">KMRL <span className="text-blue-600">AI</span></span>
+                    </div>
+
+                    <div>
+                        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome back</h2>
+                        <p className="mt-2 text-sm text-gray-500 font-medium">Please enter your credentials to access the portal.</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Email Address</label>
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    required
+                                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-white shadow-sm focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900"
+                                    placeholder="name@kmrl.co.in"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Password</label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    required
+                                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 bg-white shadow-sm focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900"
+                                    placeholder="••••••••"
+                                />
+                            </div>
                         </div>
 
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                            <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100 font-medium">
                                 {error}
                             </div>
                         )}
@@ -76,18 +106,31 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors disabled:opacity-60 shadow-sm"
+                            className="w-full flex justify-center py-3.5 px-4 rounded-xl shadow-lg shadow-blue-500/30 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0"
                         >
-                            {loading ? 'Signing in…' : 'Sign In'}
+                            {loading ? 'Authenticating...' : 'Sign In to Portal'}
                         </button>
                     </form>
 
-                    {/* Demo credentials hint */}
-                    <div className="mt-6 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500 space-y-0.5">
-                        <p className="font-semibold text-gray-700 mb-1">Demo Credentials</p>
-                        <p><span className="font-medium">Admin:</span> admin@kmrl.co.in / Admin@123</p>
-                        <p><span className="font-medium">Manager:</span> manager@kmrl.co.in / Manager@123</p>
-                        <p><span className="font-medium">Employee:</span> employee@kmrl.co.in / Employee@123</p>
+                    <div className="mt-10 pt-8 border-t border-gray-200/60">
+                        <p className="text-xs font-bold text-gray-400 mb-4 tracking-wider">DEMO CREDENTIALS</p>
+                        <div className="grid grid-cols-2 gap-3 text-xs text-gray-600">
+                            <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                                <span className="font-bold text-gray-900 block mb-0.5">Admin</span>
+                                <div>admin@kmrl.co.in</div>
+                                <div className="text-gray-400 mt-1 font-mono text-[10px]">Pwd: Admin@123</div>
+                            </div>
+                            <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                                <span className="font-bold text-gray-900 block mb-0.5">Manager</span>
+                                <div>manager@kmrl.co.in</div>
+                                <div className="text-gray-400 mt-1 font-mono text-[10px]">Pwd: Manager@123</div>
+                            </div>
+                            <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm">
+                                <span className="font-bold text-gray-900 block mb-0.5">Employee</span>
+                                <div>employee@kmrl.co.in</div>
+                                <div className="text-gray-400 mt-1 font-mono text-[10px]">Pwd: Employee@123</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

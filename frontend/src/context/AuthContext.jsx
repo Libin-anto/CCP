@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            axios.get('http://localhost:8000/api/v1/auth/me')
+            axios.get('http://127.0.0.1:8000/api/v1/auth/me')
                 .then(res => setUser(res.data))
                 .catch(() => { logout(); })
                 .finally(() => setLoading(false));
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
         const form = new URLSearchParams();
         form.append('username', email);
         form.append('password', password);
-        const res = await axios.post('http://localhost:8000/api/v1/auth/login', form, {
+        const res = await axios.post('http://127.0.0.1:8000/api/v1/auth/login', form, {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
         const { access_token, role } = res.data;
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
         setToken(access_token);
 
         // Fetch full profile
-        const me = await axios.get('http://localhost:8000/api/v1/auth/me');
+        const me = await axios.get('http://127.0.0.1:8000/api/v1/auth/me');
         setUser(me.data);
         return me.data;
     };

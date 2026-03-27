@@ -8,8 +8,11 @@ from app.models.all_models import Document
 
 router = APIRouter()
 
+from app.api import deps
+from app.models.all_models import User
+
 @router.get("/query")
-def search_documents(q: str, db: Session = Depends(get_db)):
+def search_documents(q: str, current_user: User = Depends(deps.get_current_active_user), db: Session = Depends(get_db)):
     if not q:
         return []
     
@@ -90,9 +93,10 @@ def search_documents(q: str, db: Session = Depends(get_db)):
                      "title": doc.get("original_filename"),
                      "score": meta['score'],
                      "match_type": meta['source'],
-                     "department": doc.get("department", "General"),
+                     "department": doc.get("department", "Global"),
                      "classification": doc.get("classification"),
-                     "url": doc.get("file_url")
+                     "url": doc.get("file_url"),
+                     "approval_status": doc.get("approval_status", "approved")
                  }
         else:
             # SQL Retrieval
@@ -108,13 +112,25 @@ def search_documents(q: str, db: Session = Depends(get_db)):
                      "title": doc.original_filename,
                      "score": meta['score'],
                      "match_type": meta['source'],
-                     "department": doc.department or "General",
+                     "department": doc.department or "Global",
                      "classification": doc.classification,
-                     "url": url 
+                     "url": url,
+                     "approval_status": getattr(doc, "approval_status", "approved")
                  }
         
         if doc_info:
-            response.append(doc_info)
+            # RBAC Filtering
+            allowed = False
+            if current_user.role == "admin":
+                allowed = True
+            elif current_user.role == "manager":
+                allowed = (doc_info["department"] == current_user.department) or (doc_info["department"] in ["Global", "General"])
+            elif current_user.role == "employee":
+                allowed = ((doc_info["department"] == current_user.department) and (doc_info.get("approval_status") == "approved")) or \
+                          (doc_info["department"] in ["Global", "General"] and doc_info.get("approval_status") == "approved")
+            
+            if allowed:
+                response.append(doc_info)
             
     # Sort by score (ascending for L2 distance, so 0.0 is best)
     response.sort(key=lambda x: x['score'])

@@ -59,8 +59,9 @@ export default function Upload() {
             formData.append("file", file);
 
             try {
-                await axios.post("http://127.0.0.1:8000/api/v1/documents/upload", formData);
-                setUploadStatus(prev => ({ ...prev, [file.name]: 'pending_approval' }));
+                const res = await axios.post("http://127.0.0.1:8000/api/v1/documents/upload", formData);
+                const backendStatus = res.data.approval_status;
+                setUploadStatus(prev => ({ ...prev, [file.name]: backendStatus === 'approved' ? 'approved' : 'pending_approval' }));
             } catch (err) {
                 console.error(err);
                 setUploadStatus(prev => ({ ...prev, [file.name]: 'error' }));
@@ -71,16 +72,17 @@ export default function Upload() {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-            <div className="bg-white rounded-3xl shadow-xl shadow-blue-500/5 overflow-hidden border border-gray-100">
-                <div className="p-6 sm:p-10 lg:p-12">
-                    <div className="text-center mb-10">
-                        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Bulk Document Ingestion</h1>
-                        <p className="text-sm sm:text-base text-gray-500 max-w-sm mx-auto">Digitize and index your documents for instant AI-powered search</p>
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl shadow-blue-900/5 overflow-hidden border border-white">
+                <div className="p-8 sm:p-10 lg:p-14 relative">
+                    <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-blue-50 opacity-50 blur-3xl pointer-events-none"></div>
+                    <div className="text-center mb-12 relative z-10">
+                        <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700 mb-4 tracking-tight">Intelligence Ingestion</h1>
+                        <p className="text-base sm:text-lg text-slate-500 max-w-md mx-auto font-medium">Securely upload and vector-index your documents for instant AI retrieval.</p>
                     </div>
 
                     {/* Drop Zone */}
                     <div
-                        className="relative group border-2 border-dashed border-gray-200 rounded-2xl h-56 flex flex-col items-center justify-center bg-gray-50/50 hover:bg-blue-50/50 hover:border-blue-400 transition-all cursor-pointer overflow-hidden"
+                        className="relative group border-2 border-dashed border-slate-200 rounded-3xl h-64 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-blue-50/30 hover:border-blue-400 transition-all duration-300 cursor-pointer overflow-hidden shadow-inner"
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
                         onClick={triggerFileSelect}
@@ -94,11 +96,11 @@ export default function Upload() {
                             accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                             multiple
                         />
-                        <div className="bg-white p-4 rounded-full shadow-sm mb-4 group-hover:scale-110 transition-transform">
-                            <CloudArrowUpIcon className="h-8 w-8 text-blue-600" />
+                        <div className="bg-gradient-to-br from-white to-blue-50 p-4 rounded-2xl shadow-sm mb-5 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 border border-blue-100/50">
+                            <CloudArrowUpIcon className="h-10 w-10 text-blue-600" />
                         </div>
-                        <p className="text-lg font-bold text-gray-700">Click or Drag to add files</p>
-                        <p className="text-xs sm:text-sm text-gray-400 mt-1 px-4 text-center">Supported: PDF, Docx, Images (Max 100MB)</p>
+                        <p className="text-xl font-extrabold text-slate-700">Drop documents here</p>
+                        <p className="text-sm text-slate-400 mt-2 px-4 text-center font-medium">Supports PDF, DOCX, Images up to 100MB</p>
                     </div>
 
                     {/* File List */}
@@ -133,6 +135,11 @@ export default function Upload() {
                                                         <ClockIcon className="h-3.5 w-3.5 mr-1" /> Pending Approval
                                                     </span>
                                                 )}
+                                                {uploadStatus[file.name] === 'approved' && (
+                                                    <span className="flex items-center text-green-600 text-[10px] sm:text-xs font-bold bg-green-50 px-2 py-1 rounded-full">
+                                                        <CheckCircleIcon className="h-3.5 w-3.5 mr-1" /> Auto-Approved
+                                                    </span>
+                                                )}
                                                 {uploadStatus[file.name] === 'error' && (
                                                     <span className="flex items-center text-red-600 text-[10px] sm:text-xs font-bold bg-red-50 px-2 py-1 rounded-full">
                                                         Error
@@ -161,10 +168,10 @@ export default function Upload() {
                             onClick={uploadFiles}
                             disabled={files.length === 0 || isProcessing}
                             className={`
-                                relative overflow-hidden px-8 py-3.5 rounded-2xl font-bold text-white shadow-lg transition-all active:scale-95
+                                relative overflow-hidden px-10 py-4 rounded-2xl font-bold text-white shadow-lg transition-all active:scale-95 text-lg
                                 ${files.length === 0 || isProcessing
-                                    ? 'bg-gray-300 cursor-not-allowed grayscale'
-                                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-blue-500/25'}
+                                    ? 'bg-slate-300 cursor-not-allowed text-slate-500 shadow-none'
+                                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/40 transform hover:-translate-y-0.5'}
                             `}
                         >
                             <span className="relative z-10 flex items-center justify-center">

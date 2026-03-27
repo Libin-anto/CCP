@@ -34,16 +34,25 @@ def list_documents(
     query = db.query(Document)
 
     # Role-based filtering
+    from sqlalchemy import or_
+
     if current_user.role == "employee":
-        from sqlalchemy import or_
         query = query.filter(
             or_(
                 Document.uploaded_by == current_user.id,
-                (Document.department == current_user.department) & (Document.approval_status == "approved")
+                (Document.department == current_user.department) & (Document.approval_status == "approved"),
+                (Document.department == "Global") & (Document.approval_status == "approved"),
+                (Document.department == None) & (Document.approval_status == "approved")
             )
         )
     elif current_user.role == "manager":
-        query = query.filter(Document.department == current_user.department)
+        query = query.filter(
+            or_(
+                Document.department == current_user.department,
+                Document.department == "Global",
+                Document.department == None
+            )
+        )
     # admin sees all
 
     if q:
@@ -69,10 +78,15 @@ async def upload_document(
         # Set department from user
         doc = db.query(Document).filter(Document.id == doc_data["id"]).first()
         if doc:
-            doc.department = current_user.department
-            doc.approval_status = "pending"
+            if current_user.role == "admin":
+                doc.department = "Global"
+                doc.approval_status = "approved"
+                doc.approved_by = current_user.id
+            else:
+                doc.department = current_user.department
+                doc.approval_status = "pending"
             db.commit()
-        return {"status": "success", "document_id": doc_data["id"], "filename": doc_data["original_filename"], "approval_status": "pending"}
+        return {"status": "success", "document_id": doc_data["id"], "filename": doc_data["original_filename"], "approval_status": doc.approval_status if doc else "pending"}
     except Exception as e:
         print(f"Error in upload_document: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=str(e))
